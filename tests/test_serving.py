@@ -196,7 +196,9 @@ def test_exporter_proxies_and_counts(monkeypatch):
     body = {"dataframe_split": {"columns": ["a"], "data": [[1.0]]}}
     assert client.post("/predict", json=body).status_code == 200
     assert client.post("/predict", content="{bad").status_code == 400
-    assert client.post("/feedback", json={"prediction": 1, "actual": 1}).ok
+    assert (
+        client.post("/feedback", json={"prediction": 1, "actual": 1}).status_code == 200
+    )
     assert (
         client.post("/feedback", json={"prediction": 3, "actual": 1}).status_code == 422
     )
