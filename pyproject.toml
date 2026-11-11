@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "telco-churn"
-version = "0.1.0"
+version = "1.0.0"
 description = "Churn early-warning prototype: tracked Gradient Boosting model, MLflow serving and a Streamlit app"
 readme = "README.md"
 requires-python = ">=3.11"
