@@ -10,7 +10,12 @@ This README retells the notebook in plain language, section by section, without 
 tracked MLflow run, served behind a monitored API, and used by a Streamlit early-warning app for the retention team of
 the fictional carrier **MurphysTelecom** in [`app/`](app/).
 
-**Try the app:** run it on your own computer in two commands (see [How to Run](#how-to-run)). <!-- TODO: add the Streamlit Community Cloud badge and link once the app is deployed. -->
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://murphys-telecom-churn-system.streamlit.app/)
+
+**Try the app:** open the live demo at
+[murphys-telecom-churn-system.streamlit.app](https://murphys-telecom-churn-system.streamlit.app/), or run it on your
+own computer in two commands (see [How to Run](#how-to-run)). The live demo can take a few seconds to wake up after a
+quiet period.
 
 ## At a glance
 

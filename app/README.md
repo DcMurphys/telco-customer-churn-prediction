@@ -1,5 +1,7 @@
 # Streamlit app: MurphysTelecom churn early warning
 
+Live demo: [murphys-telecom-churn-system.streamlit.app](https://murphys-telecom-churn-system.streamlit.app/)
+
 A portfolio prototype for the retention team of **MurphysTelecom**, a fictional U.S. carrier. It offers one plain-language interface for business users with overview, alerts, plan risk, customer check, batch scoring, churn insights (exploratory dashboard), glossary and alert settings. Statistical detail and model evaluation live in the notebook and `artifacts/model/` reports, not in the app.
 
 ## Run locally
