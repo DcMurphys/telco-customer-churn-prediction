@@ -1038,9 +1038,9 @@ https://www.kaggle.com/datasets/alfathterry/telco-customer-churn-11-1-3
 
 ## License
 
-<!-- TODO: choose a licence (e.g. MIT) and add a LICENSE file. Until then, all rights are reserved by default. -->
+The code in this repository is released under the [MIT License](LICENSE), © 2026 Dwi Cahaya Dharma.
 
-Whatever licence is chosen for the code, it will not cover material owned by others:
+The licence does not cover material owned by others:
 
 * **Data:** the IBM Telco Customer Churn sample and its Kaggle republication stay under their original terms
   (<!-- TODO: confirm the dataset licence on the Kaggle page -->). The derived extracts in `app/data/` and
