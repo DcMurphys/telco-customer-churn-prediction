@@ -1,6 +1,6 @@
 # Streamlit app: MurphysTelecom churn early warning
 
-A portfolio prototype for the retention team of **MurphysTelecom**, a fictional U.S. carrier. It implements `docs/UI_UX_REQUIREMENTS.md` (v1.2): one plain-language interface for business users with overview, alerts, plan risk, customer check, batch scoring, churn insights (exploratory dashboard), glossary and alert settings. Statistical detail and model evaluation live in the notebook and `artifacts/model/` reports, not in the app.
+A portfolio prototype for the retention team of **MurphysTelecom**, a fictional U.S. carrier. It offers one plain-language interface for business users with overview, alerts, plan risk, customer check, batch scoring, churn insights (exploratory dashboard), glossary and alert settings. Statistical detail and model evaluation live in the notebook and `artifacts/model/` reports, not in the app.
 
 ## Run locally
 

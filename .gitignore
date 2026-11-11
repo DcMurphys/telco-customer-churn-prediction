@@ -48,3 +48,6 @@ artifacts/prototype/optuna/
 
 # Local copies of files from before the restructure
 _archive/
+
+# Internal working documents (requirements, revision notes)
+docs/

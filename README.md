@@ -712,8 +712,7 @@ break-even cut-off meaningful.
 
 ### 8.4 The Early-Warning App
 
-The Streamlit app is the retention team's front end, built to the requirements in
-[`docs/UI_UX_REQUIREMENTS.md`](docs/UI_UX_REQUIREMENTS.md). It applies the saved preparation steps, the calibrator and
+The Streamlit app is the retention team's front end. It applies the saved preparation steps, the calibrator and
 the cut-offs in the same order as the notebook, and speaks plain language throughout: a risk level, the top three
 reasons and a suggested next step instead of probabilities and statistics.
 
@@ -916,7 +915,6 @@ make client                        # sends 20 test customers and their true outc
 | `serving/` | Prometheus exporter, inference client and request helpers |
 | `app/` | The Streamlit app (models, controllers and views), its demo data, logo and font |
 | `tests/` | Automated tests |
-| `docs/` | Revision report and UI/UX requirements |
 | `assets/readme/` | Images used in this README |
 | `.github/workflows/` | CI and the manual training and image workflow |
 

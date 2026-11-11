@@ -53,7 +53,7 @@ FOOTER_TEXT = (
     "Data: IBM Telco Customer Churn sample."
 )
 
-# Palette tokens (docs/UI_UX_REQUIREMENTS.md, Section 3.3)
+# Palette tokens
 PALETTE = {
     "brand-orange": "#FF6A13",
     "brand-orange-dark": "#C2410C",

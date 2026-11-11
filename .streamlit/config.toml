@@ -1,4 +1,4 @@
-# Theme and deployment settings (docs/UI_UX_REQUIREMENTS.md, Sections 3.3 and 9)
+# Theme and deployment settings
 [theme]
 base = "light"
 primaryColor = "#FF6A13"
