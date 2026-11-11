@@ -4,7 +4,7 @@
   "churn_prior": 0.2653532126375577,
   "calibration": "isotonic regression on out-of-fold scores",
   "calibrator_artifact": "model_extras/calibrator.joblib",
-  "recall_threshold": 0.31403386720985754,
+  "recall_threshold": 0.3226598298058041,
   "breakeven_threshold": 0.16417910447761194,
   "target_recall": 0.85
 }

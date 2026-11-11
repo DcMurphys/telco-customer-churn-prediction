@@ -1,7 +1,7 @@
 {
-  "run_id": "2d2298ddfdf849a78fe698eda31cbd8e",
-  "experiment_id": "941901325859954839",
+  "run_id": "0e98ca33504e46ae890192dcd989b186",
+  "experiment_id": "0",
   "experiment_name": "gradient_boost_tuned",
-  "policy_model_uri": "runs:/2d2298ddfdf849a78fe698eda31cbd8e/churn_policy_model",
-  "tracking": "local"
+  "policy_model_uri": "runs:/0e98ca33504e46ae890192dcd989b186/churn_policy_model",
+  "tracking": "remote"
 }
