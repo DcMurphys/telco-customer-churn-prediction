@@ -1047,7 +1047,9 @@ The code in this repository is released under the [MIT License](LICENSE), © 202
 
 The licence does not cover material owned by others:
 
-* **Data:** the IBM Telco Customer Churn sample and its Kaggle republication stay under their original terms
-  (<!-- TODO: confirm the dataset licence on the Kaggle page -->). The derived extracts in `app/data/` and
-  `data/processed/` come from that sample.
+* **Data:** the Telco Customer Churn (11.1.3+) sample was created by IBM as fictional sample data for IBM Cognos
+  Analytics. IBM's page does not state a licence for it, so it is used here for education and demonstration only.
+  The Kaggle republication that the notebook downloads is listed under the MIT License by its uploader. The derived
+  extracts in `app/data/` and `data/processed/` come from that sample and are not covered by this repository's
+  licence.
 * **Font:** Inter in `app/static/fonts/` is licensed under the SIL Open Font License 1.1 (see `Inter-LICENSE.txt`).

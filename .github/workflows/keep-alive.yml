@@ -1,0 +1,76 @@
+# Keeps the live Streamlit demo awake. Streamlit Community Cloud puts apps to
+# sleep after a quiet period, and a plain HTTP ping does not wake them, so this
+# job opens the app in a headless browser and presses the wake-up button when
+# the sleep page is shown. Runs every 6 hours and can be started by hand.
+name: Keep Streamlit app awake
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      APP_URL: https://murphys-telecom-churn-system.streamlit.app/
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright and Chromium
+        run: |
+          pip install "playwright>=1.45"
+          python -m playwright install --with-deps chromium
+
+      - name: Open the app and wake it if needed
+        shell: python
+        run: |
+          import os
+          import sys
+
+          from playwright.sync_api import TimeoutError as PlaywrightTimeout
+          from playwright.sync_api import sync_playwright
+
+          url = os.environ["APP_URL"]
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+              wake = page.get_by_role("button", name="Yes, get this app back up!")
+              try:
+                  wake.wait_for(timeout=15_000)
+                  print("App was asleep: pressing the wake-up button")
+                  wake.click()
+                  page.wait_for_timeout(5_000)
+              except PlaywrightTimeout:
+                  print("App is awake")
+
+              # The app itself runs inside an iframe; wait for Streamlit to render.
+              app = page.frame_locator("iframe[title='streamlitApp']")
+              try:
+                  app.locator("[data-testid='stApp']").wait_for(timeout=180_000)
+                  print("Streamlit app rendered")
+              except PlaywrightTimeout:
+                  page.screenshot(path="keep-alive.png", full_page=True)
+                  print("App did not render within 3 minutes", file=sys.stderr)
+                  sys.exit(1)
+              finally:
+                  browser.close()
+
+      - name: Upload screenshot on failure
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: keep-alive-screenshot
+          path: keep-alive.png
+          if-no-files-found: ignore
