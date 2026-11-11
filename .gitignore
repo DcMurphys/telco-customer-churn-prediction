@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# Test, lint and type-check caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# OS and editors
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
+
+# Local Claude Code preview config (absolute paths) and personal settings
+.claude/
+
+# Data that is downloaded or generated locally
+data/raw/*
+!data/raw/.gitkeep
+data/payloads/*
+!data/payloads/.gitkeep
+
+# Experiment tracking (logged to DagsHub instead)
+mlruns/
+artifacts/optuna/
+artifacts/prototype/optuna/
+*.log
+
+# Local copies of files from before the restructure
+_archive/

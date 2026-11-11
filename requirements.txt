@@ -1,0 +1,16 @@
+# Notebook and training pipeline.
+# Exact pins: the exported model and preprocessing artifacts are pickled with this stack.
+dagshub == 0.7.0
+gdown == 6.5.1
+ipython == 9.6.0
+matplotlib == 3.10.7
+mlflow == 2.19.0
+numpy == 2.3.4
+optuna == 5.0.0
+pandas == 2.3.3
+scikit-learn == 1.7.0
+scipy == 1.16.2
+seaborn == 0.13.2
+
+# Shared package (src/telco_churn), installed in editable mode
+-e .

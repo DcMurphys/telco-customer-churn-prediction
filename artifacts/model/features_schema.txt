@@ -1,0 +1,58 @@
+Age
+Number of Dependents
+Number of Referrals
+Avg Monthly Long Distance Charges
+Avg Monthly GB Download
+Total Refunds
+Total Extra Data Charges
+CLTV
+Under 30_No
+Under 30_Yes
+Senior Citizen_No
+Senior Citizen_Yes
+Married_No
+Married_Yes
+Dependents_No
+Dependents_Yes
+Referred a Friend_No
+Referred a Friend_Yes
+Offer_No
+Offer_Offer A
+Offer_Offer B
+Offer_Offer C
+Offer_Offer D
+Offer_Offer E
+Multiple Lines_No
+Multiple Lines_Yes
+Internet Service_No
+Internet Service_Yes
+Internet Type_Cable
+Internet Type_DSL
+Internet Type_Fiber Optic
+Internet Type_No
+Online Security_No
+Online Security_Yes
+Online Backup_No
+Online Backup_Yes
+Device Protection Plan_No
+Device Protection Plan_Yes
+Premium Tech Support_No
+Premium Tech Support_Yes
+Streaming TV_No
+Streaming TV_Yes
+Streaming Movies_No
+Streaming Movies_Yes
+Streaming Music_No
+Streaming Music_Yes
+Unlimited Data_No
+Unlimited Data_Yes
+Contract_Month-to-Month
+Contract_One Year
+Contract_Two Year
+Paperless Billing_No
+Paperless Billing_Yes
+Payment Method_Bank Withdrawal
+Payment Method_Credit Card
+Payment Method_Mailed Check
+Pc_1
+Pc_2

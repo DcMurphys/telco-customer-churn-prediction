@@ -1,0 +1,37 @@
+# Theme and deployment settings (docs/UI_UX_REQUIREMENTS.md, Sections 3.3 and 9)
+[theme]
+base = "light"
+primaryColor = "#FF6A13"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#FFF4EC"
+textColor = "#1B1B1F"
+linkColor = "#C2410C"
+borderColor = "#E7E7EA"
+font = "Inter, sans-serif"
+
+# Inter is self-hosted (SIL OFL 1.1) and served from app/static/fonts/
+[[theme.fontFaces]]
+family = "Inter"
+url = "app/static/fonts/Inter-Regular.woff2"
+weight = 400
+
+[[theme.fontFaces]]
+family = "Inter"
+url = "app/static/fonts/Inter-SemiBold.woff2"
+weight = 600
+
+[[theme.fontFaces]]
+family = "Inter"
+url = "app/static/fonts/Inter-Bold.woff2"
+weight = 700
+
+[server]
+enableStaticServing = true
+maxUploadSize = 5
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = "none"

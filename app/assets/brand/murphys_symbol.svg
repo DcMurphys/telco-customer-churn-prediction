@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MurphysTelecom">
+  <title>MurphysTelecom</title>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="#FF6A13"/>
+  <path d="M15 48 V18 L32 35 L49 18 V48" fill="none" stroke="#1B1B1F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

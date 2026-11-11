@@ -1,0 +1,12 @@
+{
+  "model": "Gradient Boosting (tuned)",
+  "churn_prior": 0.2653532126375577,
+  "undersampling_beta": 0.36119835709108483,
+  "recall_threshold": 0.26836550505671297,
+  "breakeven_threshold": 0.16417910447761194,
+  "target_recall": 0.85,
+  "clv_reference": 4238.0,
+  "offer_cost": 211.9,
+  "contact_cost": 21.19,
+  "offer_acceptance_rate": 0.3
+}

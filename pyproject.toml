@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telco-churn"
+version = "0.1.0"
+description = "Churn early-warning prototype: tracked Gradient Boosting model, MLflow serving and a Streamlit app"
+readme = "README.md"
+requires-python = ">=3.11"
+# Runtime pins live in the requirements files (see README).
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+extend-exclude = ["_archive"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "N", "PD", "NPY"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "pipelines", "serving", "telco_churn"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# src/ for telco_churn; the repository root for app/, pipelines/ and serving/
+pythonpath = ["src", "."]

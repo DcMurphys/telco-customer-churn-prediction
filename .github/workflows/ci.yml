@@ -1,0 +1,241 @@
+# CI for every push and pull request (lint + tests), plus a manually triggered
+# training pipeline adapted from DcMurphys/Workflow-CI: tracked training on the
+# remote MLflow server, model artifacts back to the repository, and a Docker
+# image of the served model on Docker Hub.
+#
+# Repository secrets used by the training job:
+#   MLFLOW_TRACKING_URI       https://dagshub.com/dharma.dwicahaya/telco-customer-churn-prediction.mlflow
+#   MLFLOW_TRACKING_USERNAME  DagsHub user name
+#   MLFLOW_TRACKING_PASSWORD  DagsHub access token
+#   DOCKER_HUB_USERNAME       only when push_image is true
+#   DOCKER_HUB_ACCESS_TOKEN   only when push_image is true
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      n_trials:
+        description: "Optuna trials for Gradient Boosting"
+        type: number
+        default: 50
+      commit_artifacts:
+        description: "Commit the new artifacts/model/ to the repository"
+        type: boolean
+        default: true
+      push_image:
+        description: "Build, test and push the serving image to Docker Hub"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "ruff>=0.6"
+      - run: ruff check src pipelines serving app tests notebooks
+      - run: ruff format --check src pipelines serving app tests
+
+  test-app:
+    # Same dependencies as Streamlit Community Cloud (app/requirements.txt)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: app/requirements.txt
+      - run: pip install -r app/requirements.txt "pytest>=8.0"
+      # Tests that need data/raw/telco.csv or MLflow skip when absent.
+      - run: pytest -q
+
+  test-serving:
+    # Exporter and inference client with the serving stack installed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r app/requirements.txt -r requirements-serving.txt "pytest>=8.0"
+      - run: pytest -q tests/test_serving.py
+
+  train-and-deploy:
+    name: Train, register artifacts and publish the serving image
+    if: github.event_name == 'workflow_dispatch'
+    needs: [lint, test-app, test-serving]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write # commit artifacts/model/
+    concurrency:
+      group: train-${{ github.ref }}
+      cancel-in-progress: false
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+      MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+      # Avoid request time-outs against the remote tracking server
+      MLFLOW_HTTP_REQUEST_MAX_RETRIES: "7"
+      MLFLOW_HTTP_REQUEST_TIMEOUT: "600"
+      MLFLOW_TRACKING_SERVER_REQUEST_TIMEOUT: "600"
+      PYTHONPATH: src:.
+      MPLBACKEND: Agg
+      IMAGE_NAME: murphys-telecom-churn-system
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python (same version as local training)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Check secrets and input files
+        run: |
+          set -euo pipefail
+          for name in MLFLOW_TRACKING_URI MLFLOW_TRACKING_USERNAME MLFLOW_TRACKING_PASSWORD; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Repository secret $name is not set."
+              exit 1
+            fi
+          done
+          inputs=(
+            data/processed/train_pca.csv
+            data/processed/test_pca.csv
+            artifacts/prototype/decision_policy.json
+            artifacts/preprocessing/predictor_encoder.joblib
+          )
+          for path in "${inputs[@]}"; do
+            if [ ! -f "$path" ]; then
+              echo "::error::Required file not found: $path"
+              exit 1
+            fi
+            echo "Found $path"
+          done
+
+      - name: Install training dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tracked training
+        run: |
+          set -o pipefail
+          python -m pipelines.train --n-trials "${{ inputs.n_trials }}" 2>&1 | tee training.log
+
+      - name: Read the run ID
+        id: run
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          info = json.load(open("artifacts/model/run_info.json"))
+          print(f"run_id={info['run_id']}")
+          print(f"model_uri={info['policy_model_uri']}")
+          PY
+          cat artifacts/model/run_info.json
+
+      - name: Smoke-test the logged policy model
+        env:
+          MODEL_URI: ${{ steps.run.outputs.model_uri }}
+        run: |
+          python - <<'PY'
+          import os
+
+          import mlflow
+          import pandas as pd
+
+          model = mlflow.pyfunc.load_model(os.environ["MODEL_URI"])
+          features = pd.read_csv("data/processed/test_pca.csv").drop(columns="Churn Label")
+          output = model.predict(features.head(20))
+          assert set(output.columns) == {"churn_probability", "flagged", "risk_level"}
+          assert output["churn_probability"].between(0, 1).all()
+          print(output.head())
+          PY
+
+      - name: Upload training outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-${{ steps.run.outputs.run_id || github.run_id }}
+          path: |
+            artifacts/model/
+            training.log
+          if-no-files-found: warn
+
+      - name: Commit artifacts/model/ to the repository
+        if: inputs.commit_artifacts
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add artifacts/model/
+          if git diff --staged --quiet; then
+            echo "Model artifacts unchanged; nothing to commit."
+          else
+            git commit -m "Update model artifacts (run ${{ steps.run.outputs.run_id }}) [skip ci]"
+            git push
+          fi
+
+      - name: Generate the serving Dockerfile
+        if: inputs.push_image
+        env:
+          MODEL_URI: ${{ steps.run.outputs.model_uri }}
+        run: |
+          mlflow models generate-dockerfile -m "$MODEL_URI" -d docker_build --env-manager local
+          cat docker_build/Dockerfile
+
+      - name: Build the serving image
+        if: inputs.push_image
+        run: docker build -t "$IMAGE_NAME:local" docker_build
+
+      - name: Smoke-test the serving container
+        if: inputs.push_image
+        run: |
+          set -euo pipefail
+          docker run -d --name churn-serving -p 8080:8080 "$IMAGE_NAME:local"
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:8080/ping > /dev/null; then break; fi
+            sleep 2
+          done
+          example=$(find docker_build -name serving_input_example.json | head -n 1)
+          curl -sf -X POST http://127.0.0.1:8080/invocations \
+            -H "Content-Type: application/json" --data @"$example" | tee response.json
+          grep -q risk_level response.json
+          docker logs churn-serving | tail -n 20
+          docker rm -f churn-serving
+
+      - name: Log in to Docker Hub
+        if: inputs.push_image
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Tag and push the image
+        if: inputs.push_image
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
+          RUN_ID: ${{ steps.run.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          for tag in latest "run-${RUN_ID:0:8}"; do
+            docker tag "$IMAGE_NAME:local" "$DOCKER_USER/$IMAGE_NAME:$tag"
+            docker push "$DOCKER_USER/$IMAGE_NAME:$tag"
+          done
+          echo "Published $DOCKER_USER/$IMAGE_NAME (latest, run-${RUN_ID:0:8})"

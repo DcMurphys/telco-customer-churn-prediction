@@ -1,0 +1,6 @@
+# Everything for local development: notebook, training, serving, app, tests, lint.
+-r requirements.txt
+-r requirements-serving.txt
+-r app/requirements.txt
+pytest>=8.0
+ruff>=0.6

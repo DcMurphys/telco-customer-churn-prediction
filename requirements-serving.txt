@@ -1,0 +1,10 @@
+# Serving stack (serving/): Prometheus exporter and inference client.
+# Model server: `mlflow models serve` (mlflow is pinned in requirements.txt).
+# Lower bounds only: pin exact versions once the serving stack has been tested.
+fastapi>=0.110
+httpx>=0.27
+prometheus-client>=0.20
+psutil>=5.9
+pydantic>=2.0
+requests>=2.31
+uvicorn>=0.29

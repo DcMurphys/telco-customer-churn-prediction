@@ -1,0 +1,6 @@
+{
+  "D3_recall_at_least_target": true,
+  "D4_precision_above_rule": true,
+  "D4_f1_above_rule": true,
+  "B3_net_value_positive": true
+}

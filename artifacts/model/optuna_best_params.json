@@ -1,0 +1,12 @@
+{
+  "best_cv_f2": 0.8509298581799655,
+  "params": {
+    "n_estimators": 142,
+    "learning_rate": 0.0013666689060911458,
+    "max_depth": 8,
+    "min_samples_split": 10,
+    "min_samples_leaf": 3,
+    "subsample": 0.9849519989223147,
+    "max_features": "sqrt"
+  }
+}

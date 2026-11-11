@@ -1,0 +1,7 @@
+{
+  "short_tenure_months": 12,
+  "reference_tenure_months": 37.0,
+  "high_monthly_charge": 89.85,
+  "reference_monthly_charge": 70.225,
+  "source": "training split of the IBM Telco Customer Churn sample"
+}
